@@ -159,9 +159,12 @@ export const SelectedShapeActions = ({
         {canChangeStrokeColor(appState, targetElements) &&
           renderAction("changeStrokeColor")}
       </div>
-      {canChangeBackgroundColor(appState, targetElements) && (
-        <div>{renderAction("changeBackgroundColor")}</div>
-      )}
+      {
+        // LOPO: hide background operations
+        // canChangeBackgroundColor(appState, targetElements) && (
+        //  <div>{renderAction("changeBackgroundColor")}</div>
+        // )
+      }
       {showFillIcons && renderAction("changeFillStyle")}
 
       {(hasStrokeWidth(appState.activeTool.type) ||
