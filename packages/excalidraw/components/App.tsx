@@ -2380,7 +2380,8 @@ class App extends React.Component<AppProps, AppState> {
       openSidebar: scene.appState?.openSidebar || this.state.openSidebar,
       activeTool:
         scene.appState.activeTool.type === "image"
-          ? { ...scene.appState.activeTool, type: "selection" }
+          // default active tool: text
+          ? { ...scene.appState.activeTool, type: "text" }
           : scene.appState.activeTool,
       isLoading: false,
       toast: this.state.toast,
@@ -2819,7 +2820,9 @@ class App extends React.Component<AppProps, AppState> {
       isEraserActive(this.state)
     ) {
       this.setState({
-        activeTool: updateActiveTool(this.state, { type: "selection" }),
+        // default active tool: text
+        // 快捷键取消选中橡皮擦工具后恢复到的工具
+        activeTool: updateActiveTool(this.state, { type: "text" }),
       });
     }
     if (
@@ -3235,7 +3238,9 @@ class App extends React.Component<AppProps, AppState> {
         }
         this.addTextFromPaste(data.text, isPlainPaste);
       }
-      this.setActiveTool({ type: "selection" });
+
+      // default active tool: text
+      this.setActiveTool({ type: "text" });
       event?.preventDefault();
     },
   );
@@ -3380,7 +3385,9 @@ class App extends React.Component<AppProps, AppState> {
         }
       },
     );
-    this.setActiveTool({ type: "selection" });
+
+    // default active tool: text
+    this.setActiveTool({ type: "text" });
 
     if (opts.fitToContent) {
       this.scrollToContent(duplicatedElements, {
@@ -3631,7 +3638,8 @@ class App extends React.Component<AppProps, AppState> {
           ...updateActiveTool(
             this.state,
             prevState.activeTool.locked
-              ? { type: "selection" }
+              // default active tool: text
+              ? { type: "text" }
               : prevState.activeTool,
           ),
           locked: !prevState.activeTool.locked,
@@ -4604,7 +4612,9 @@ class App extends React.Component<AppProps, AppState> {
 
       if (event.key === KEYS.K && !event.altKey && !event[KEYS.CTRL_OR_CMD]) {
         if (this.state.activeTool.type === "laser") {
-          this.setActiveTool({ type: "selection" });
+          // default active tool: text
+          // 快捷键取消选中激光笔工具后恢复到的工具
+          this.setActiveTool({ type: "text" });
         } else {
           this.setActiveTool({ type: "laser" });
         }
@@ -7435,7 +7445,9 @@ class App extends React.Component<AppProps, AppState> {
     resetCursor(this.interactiveCanvas);
     if (!this.state.activeTool.locked) {
       this.setState({
-        activeTool: updateActiveTool(this.state, { type: "selection" }),
+        // default active tool: text
+        // 新建元素后切换选中的工具栏项目
+        activeTool: updateActiveTool(this.state, { type: "text" }),
       });
     }
   };
@@ -9722,10 +9734,17 @@ class App extends React.Component<AppProps, AppState> {
           (activeTool.type === "lasso" && activeTool.fromSelection))
       ) {
         resetCursor(this.interactiveCanvas);
-        this.setState({
-          newElement: null,
-          suggestedBindings: [],
-          activeTool: updateActiveTool(this.state, { type: "selection" }),
+        this.setState((prevState) => {
+          // TODO: 添加其他工具的过滤条件
+          const keepSelection = Object.keys(prevState.selectedElementIds).length !== 0 && activeTool.type !== 'text'
+          return {
+            ...prevState,
+            newElement: null,
+            suggestedBindings: [],
+            // default active tool: text
+            // set active to 'selection' or 'text' depends on whether some element(s) is selected now
+            activeTool: updateActiveTool(this.state, { type: keepSelection ? "selection" : "text" }),
+          };
         });
       } else {
         this.setState({
