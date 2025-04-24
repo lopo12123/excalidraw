@@ -30,7 +30,7 @@ body.excalidraw-cursor-resize * {
 
 .excalidraw {
   --ui-font: Assistant, system-ui, BlinkMacSystemFont, -apple-system, Segoe UI,
-    Roboto, Helvetica, Arial, sans-serif;
+  Roboto, Helvetica, Arial, sans-serif;
   font-family: var(--ui-font);
 
   position: relative;
@@ -71,6 +71,7 @@ body.excalidraw-cursor-resize * {
     &:hover {
       text-decoration: underline;
     }
+
     &:active {
       text-decoration: none;
     }
@@ -91,6 +92,21 @@ body.excalidraw-cursor-resize * {
     &.interactive {
       z-index: var(--zIndex-interactiveCanvas);
     }
+
+    background-image: linear-gradient(
+        0deg,
+        var(--grid-line-color) 0px,
+        var(--grid-line-color) 1px,
+        transparent 1px,
+        transparent 50px
+    ), linear-gradient(
+        90deg,
+        var(--grid-line-color) 0px,
+        var(--grid-line-color) 1px,
+        transparent 1px,
+        transparent 50px
+    );
+    background-size: var(--grid-cell-size) var(--grid-cell-size);
 
     // Remove the main canvas from document flow to avoid resizeObserver
     // feedback loop (see https://github.com/excalidraw/excalidraw/pull/3379)
@@ -278,6 +294,7 @@ body.excalidraw-cursor-resize * {
         --icon-fill-color: #fff;
         --keybinding-color: #fff;
       }
+
       &.active {
         background-color: var(--color-primary);
       }
@@ -590,9 +607,11 @@ body.excalidraw-cursor-resize * {
     background: var(--scrollbar-thumb);
     border-radius: 10px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: var(--scrollbar-thumb-hover);
   }
+
   ::-webkit-scrollbar-thumb:active {
     background: var(--scrollbar-thumb);
   }
@@ -630,6 +649,7 @@ body.excalidraw-cursor-resize * {
       display: none;
     }
   }
+
   .UserList-Wrapper {
     margin: 0;
     padding: 0;
@@ -677,6 +697,7 @@ body.excalidraw-cursor-resize * {
     .excalidraw__paragraph:first-child {
       margin-top: 0;
     }
+
     .excalidraw__paragraph + .excalidraw__paragraph {
       margin-top: 0rem;
     }
@@ -748,6 +769,7 @@ body.excalidraw-cursor-resize * {
   .excalidraw__embeddable__outer {
     width: 100%;
     height: 100%;
+
     & > * {
       border-radius: var(--embeddable-radius);
     }
