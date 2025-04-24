@@ -13,6 +13,7 @@ import type { History } from "../history";
 import type { Store } from "../store";
 import type { AppClassProperties, AppState } from "../types";
 import type { Action, ActionResult } from "./types";
+import { useEffect } from "react";
 
 const executeHistoryAction = (
   app: AppClassProperties,
@@ -74,6 +75,11 @@ export const createUndoAction: ActionCreator = (history, store) => ({
       ),
     );
 
+    useEffect(() => {
+      // @ts-expect-error global delegate
+      window.__delegate__.undo = updateData;
+    }, [])
+
     return (
       <ToolButton
         type="button"
@@ -113,6 +119,11 @@ export const createRedoAction: ActionCreator = (history, store) => ({
         history.isRedoStackEmpty,
       ),
     );
+
+    useEffect(() => {
+      // @ts-expect-error global delegate
+      window.__delegate__.redo = updateData;
+    }, [])
 
     return (
       <ToolButton

@@ -20,6 +20,9 @@ import type { AppProps, ExcalidrawProps } from "./types";
 
 polyfill();
 
+// @ts-ignore
+window.__delegate__ ??= {};
+
 const ExcalidrawBase = (props: ExcalidrawProps) => {
   const {
     onChange,
