@@ -16,7 +16,9 @@ import type { Action } from "../actions/types";
 
 import type { TranslationKeys } from "../i18n";
 
-export type ContextMenuItem = typeof CONTEXT_MENU_SEPARATOR | Action;
+type ContextMenuLiteral = typeof CONTEXT_MENU_SEPARATOR | typeof CONTEXT_MENU_UNDO | typeof  CONTEXT_MENU_REDO
+
+export type ContextMenuItem = ContextMenuLiteral | Action;
 
 export type ContextMenuItems = (ContextMenuItem | false | null | undefined)[];
 
@@ -29,6 +31,14 @@ type ContextMenuProps = {
 };
 
 export const CONTEXT_MENU_SEPARATOR = "separator";
+export const CONTEXT_MENU_UNDO = "undo";
+export const CONTEXT_MENU_REDO = "redo";
+
+const CONTEXT_MENU_LITERALS = new Set<ContextMenuLiteral>([
+  CONTEXT_MENU_SEPARATOR,
+  CONTEXT_MENU_UNDO,
+  CONTEXT_MENU_REDO,
+])
 
 export const ContextMenu = React.memo(
   ({ actionManager, items, top, left, onClose }: ContextMenuProps) => {
@@ -38,9 +48,8 @@ export const ContextMenu = React.memo(
     const filteredItems = items.reduce((acc: ContextMenuItem[], item) => {
       if (
         item &&
-        (item === CONTEXT_MENU_SEPARATOR ||
-          !item.predicate ||
-          item.predicate(
+        // @ts-ignore
+        (CONTEXT_MENU_LITERALS.has(item) || !item.predicate || item.predicate(
             elements,
             appState,
             actionManager.app.props,
@@ -78,6 +87,36 @@ export const ContextMenu = React.memo(
                 return null;
               }
               return <hr key={idx} className="context-menu-item-separator" />;
+            }
+
+            if (item === CONTEXT_MENU_UNDO) {
+              return (
+                <button
+                  key={idx} type="button" className="context-menu-item"
+                  onClick={() => {
+                    onClose(() => {
+                      actionManager.executeRegisteredAction('undo', "contextMenu");
+                    });
+                  }}>
+                  <div className="context-menu-item__label">{t("buttons.undo")}</div>
+                  <kbd className="context-menu-item__shortcut">Cmd+Z</kbd>
+                </button>
+              )
+            }
+
+            if (item === CONTEXT_MENU_REDO) {
+              return (
+                <button
+                  key={idx} type="button" className="context-menu-item"
+                  onClick={() => {
+                    onClose(() => {
+                      actionManager.executeRegisteredAction('redo', "contextMenu");
+                    });
+                  }}>
+                  <div className="context-menu-item__label">{t("buttons.redo")}</div>
+                  <kbd className="context-menu-item__shortcut">Cmd+Shift+Z</kbd>
+                </button>
+              )
             }
 
             const actionName = item.name;

@@ -469,7 +469,7 @@ import { EraserTrail } from "../eraser";
 
 import { activeConfirmDialogAtom } from "./ActiveConfirmDialog";
 import BraveMeasureTextError from "./BraveMeasureTextError";
-import { ContextMenu, CONTEXT_MENU_SEPARATOR } from "./ContextMenu";
+import { ContextMenu, CONTEXT_MENU_SEPARATOR, CONTEXT_MENU_UNDO, CONTEXT_MENU_REDO } from "./ContextMenu";
 import { activeEyeDropperAtom } from "./EyeDropper";
 import FollowMode from "./FollowMode/FollowMode";
 import LayerUI from "./LayerUI";
@@ -748,6 +748,8 @@ class App extends React.Component<AppProps, AppState> {
       () => this.scene.getElementsIncludingDeleted(),
       this,
     );
+    // @ts-ignore
+    window.actionManager = this.actionManager
     this.scene = new Scene();
 
     this.canvas = document.createElement("canvas");
@@ -760,6 +762,7 @@ class App extends React.Component<AppProps, AppState> {
 
     if (excalidrawAPI) {
       const api: ExcalidrawImperativeAPI = {
+        actionManager: this.actionManager,
         updateScene: this.updateScene,
         mutateElement: this.mutateElement,
         updateLibrary: this.library.updateLibrary,
@@ -10947,6 +10950,8 @@ class App extends React.Component<AppProps, AppState> {
 
       return [
         actionPaste,
+        CONTEXT_MENU_UNDO,
+        CONTEXT_MENU_REDO,
         CONTEXT_MENU_SEPARATOR,
         actionCopyAsPng,
         actionCopyAsSvg,

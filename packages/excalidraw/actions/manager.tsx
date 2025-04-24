@@ -127,6 +127,17 @@ export class ActionManager {
     return true;
   }
 
+  // trigger a registered action by its name (add this for 'undo' & 'redo')
+  executeRegisteredAction(actionName: ActionName, source: ActionSource = "api") {
+    const action = this.actions[actionName];
+    if (!action) {
+      console.warn('No such action in registered action', actionName);
+      return;
+    }
+
+    this.executeAction(action, source);
+  }
+
   executeAction<T extends Action>(
     action: T,
     source: ActionSource = "api",
