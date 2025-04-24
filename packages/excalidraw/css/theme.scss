@@ -163,8 +163,8 @@
   --color-badge: #0b6513;
   --background-color-badge: #d3ffd2;
 
-  --grid-line-color: #0000001a;
-  --grid-cell-size: 50px;
+  //--grid-line-color: #0000001a;
+  //--grid-cell-size: 50px;
 
   &.theme--dark {
     &.theme--dark-background-none {
@@ -268,6 +268,6 @@
     --color-border-outline-variant: #46464f;
     --color-surface-primary-container: #403e6a;
 
-    --grid-line-color: #0000001a;
+    //--grid-line-color: #0000001a;
   }
 }
