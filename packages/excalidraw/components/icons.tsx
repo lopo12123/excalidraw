@@ -274,6 +274,19 @@ export const SelectionIcon = createIcon(
   { fill: "none", width: 22, height: 22, strokeWidth: 1.25 },
 );
 
+// custom
+export const OrderedItemIcon = createIcon(
+  <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 12h11"/>
+    <path d="M10 18h11"/>
+    <path d="M10 6h11"/>
+    <path d="M4 10h2"/>
+    <path d="M4 6h1v4"/>
+    <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>
+  </g>,
+  { fill: "none", width: 24, height: 24, strokeWidth: 1.25 },
+)
+
 export const LassoIcon = createIcon(
   <g
     stroke="currentColor"

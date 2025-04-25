@@ -622,6 +622,20 @@ const gesture: Gesture = {
   initialScale: null,
 };
 
+const isTextLikeTool = (tool: InstanceType<typeof App>['state']['activeTool']) => {
+  return tool.type === 'text' || tool.type === 'custom' && tool.customType === 'text-prefill-ol'
+}
+
+const getTextPrefillStatus  = (tool: InstanceType<typeof App>['state']['activeTool']) => {
+  if(tool.type === 'text') return { isPrefill: false, prefill: null }
+
+  // NEVER!
+  if (tool.type !== 'custom') return { isPrefill: false, prefill: null }
+
+  // TODO: more prefill case
+  return { isPrefill: true, prefill: '1. \n2. \n3. ' }
+}
+
 class App extends React.Component<AppProps, AppState> {
   canvas: AppClassProperties["canvas"];
   interactiveCanvas: AppClassProperties["interactiveCanvas"] = null;
@@ -1765,6 +1779,7 @@ class App extends React.Component<AppProps, AppState> {
                         )}
                         {this.state.contextMenu && (
                           <ContextMenu
+                            scene={this.scene}
                             items={this.state.contextMenu.items}
                             top={this.state.contextMenu.top}
                             left={this.state.contextMenu.left}
@@ -4543,6 +4558,7 @@ class App extends React.Component<AppProps, AppState> {
                   : ARROW_TYPE.sharp,
             }));
           }
+          // @ts-expect-error 由于未绑定快捷键, 此处 type 永远不会为 custom
           this.setActiveTool({ type: shape });
           event.stopPropagation();
         } else if (event.key === KEYS.Q) {
@@ -5369,6 +5385,7 @@ class App extends React.Component<AppProps, AppState> {
       y: sceneY,
     });
 
+    const { isPrefill, prefill } = getTextPrefillStatus(this.state.activeTool);
     const element =
       existingTextElement ||
       newTextElement({
@@ -5381,7 +5398,7 @@ class App extends React.Component<AppProps, AppState> {
         strokeStyle: this.state.currentItemStrokeStyle,
         roughness: this.state.currentItemRoughness,
         opacity: this.state.currentItemOpacity,
-        text: "",
+        text: isPrefill ? prefill! : "",
         fontSize,
         fontFamily,
         textAlign: parentCenterPosition
@@ -6046,7 +6063,7 @@ class App extends React.Component<AppProps, AppState> {
     if (
       hasDeselectedButton ||
       (this.state.activeTool.type !== "selection" &&
-        this.state.activeTool.type !== "text" &&
+        !isTextLikeTool(this.state.activeTool) &&
         this.state.activeTool.type !== "eraser")
     ) {
       return;
@@ -6154,7 +6171,7 @@ class App extends React.Component<AppProps, AppState> {
         !this.state.showHyperlinkPopup
       ) {
         this.setState({ showHyperlinkPopup: "info" });
-      } else if (this.state.activeTool.type === "text") {
+      } else if (isTextLikeTool(this.state.activeTool)) {
         setCursor(
           this.interactiveCanvas,
           isTextElement(hitElement) ? CURSOR_TYPE.TEXT : CURSOR_TYPE.CROSSHAIR,
@@ -6570,6 +6587,8 @@ class App extends React.Component<AppProps, AppState> {
       this.state.activeTool.type === "selection" ||
       this.state.activeTool.type === "lasso" ||
       this.state.activeTool.type === "text" ||
+      (this.state.activeTool.type === "custom"
+        && this.state.activeTool.customType === 'text-prefill-ol') ||
       this.state.activeTool.type === "image";
 
     if (!allowOnPointerDown) {
@@ -6582,7 +6601,7 @@ class App extends React.Component<AppProps, AppState> {
         pointerDownState.origin.y,
         event.shiftKey,
       );
-    } else if (this.state.activeTool.type === "text") {
+    } else if (isTextLikeTool(this.state.activeTool)) {
       this.handleTextOnPointerDown(event, pointerDownState);
     } else if (
       this.state.activeTool.type === "arrow" ||
@@ -6647,6 +6666,7 @@ class App extends React.Component<AppProps, AppState> {
       this.state.activeTool.type !== "hand"
     ) {
       this.createGenericElementOnPointerDown(
+        // @ts-expect-error 'text' 和 'custom' 两种 type 已被前面消费
         this.state.activeTool.type,
         pointerDownState,
       );

@@ -11,6 +11,7 @@ import {
   TextIcon,
   ImageIcon,
   EraserIcon,
+  OrderedItemIcon,
 } from "./icons";
 
 export const SHAPES = [
@@ -68,6 +69,14 @@ export const SHAPES = [
     value: "text",
     key: KEYS.T,
     numericKey: KEYS["8"],
+    fillable: false,
+  },
+  {
+    icon: OrderedItemIcon,
+    value: "custom",
+    customType: 'text-prefill-ol',
+    key: null,
+    numericKey: undefined,
     fillable: false,
   },
   {

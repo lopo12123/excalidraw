@@ -306,7 +306,8 @@ export const ShapesSwitcher = ({
 
   return (
     <>
-      {SHAPES.map(({ value, icon, key, numericKey, fillable }, index) => {
+      {SHAPES.map((shape, index) => {
+        const { value, icon, key, numericKey, fillable } = shape
         if (
           UIOptions.tools?.[
             value as Extract<typeof value, keyof AppProps["UIOptions"]["tools"]>
@@ -330,7 +331,7 @@ export const ShapesSwitcher = ({
             icon={icon}
             checked={activeTool.type === value}
             name="editor-current-shape"
-            title={`${capitalizeString(label)} — ${shortcut}`}
+            title={`${capitalizeString(label)}${numericKey ? ` — ${shortcut}` : ''}`}
             keyBindingLabel={numericKey || letter}
             aria-label={capitalizeString(label)}
             aria-keyshortcuts={shortcut}
@@ -357,6 +358,8 @@ export const ShapesSwitcher = ({
                   type: value,
                   insertOnCanvasDirectly: pointerType !== "mouse",
                 });
+              } else if (value === 'custom') {
+                app.setActiveTool({type: 'custom', customType: shape.customType})
               } else {
                 app.setActiveTool({ type: value });
               }

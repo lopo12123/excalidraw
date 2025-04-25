@@ -495,7 +495,8 @@ function CommandPaletteInner({
                   insertOnCanvasDirectly: event.type === EVENT.KEYDOWN,
                 });
               } else {
-                app.setActiveTool({ type: value });
+                // @ts-expect-error 透传
+                app.setActiveTool({ type: value, customType: shape.customType });
               }
             },
           };
