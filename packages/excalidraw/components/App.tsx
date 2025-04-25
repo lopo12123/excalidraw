@@ -721,7 +721,7 @@ class App extends React.Component<AppProps, AppState> {
       excalidrawAPI,
       viewModeEnabled = false,
       zenModeEnabled = false,
-      gridModeEnabled = true,
+      gridModeEnabled,
       objectsSnapModeEnabled = false,
       theme = defaultAppState.theme,
       name = `${t("labels.untitled")}-${getDateTime()}`,
