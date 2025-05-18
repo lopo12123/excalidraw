@@ -256,6 +256,8 @@ export {
   MIME_TYPES,
   ROUNDNESS,
   DEFAULT_LASER_COLOR,
+  CANVAS_SEARCH_TAB,
+  DEFAULT_SIDEBAR,
   UserIdleState,
   normalizeLink,
 } from "@excalidraw/common";
@@ -306,3 +308,6 @@ export { getDataURL } from "./data/blob";
 export { isElementLink } from "@excalidraw/element/elementLink";
 
 export { setCustomTextMetricsProvider } from "@excalidraw/element/textMeasurements";
+
+export { clearAppStateForLocalStorage, getDefaultAppState } from "./appState";
+export { clearElementsForLocalStorage } from "@excalidraw/element/index";

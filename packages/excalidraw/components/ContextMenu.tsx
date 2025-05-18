@@ -4,7 +4,7 @@ import React from "react";
 import { getShortcutFromShortcutName } from "../actions/shortcuts";
 import { t } from "../i18n";
 
-import { useExcalidrawAppState, useExcalidrawElements } from "./App";
+import { useExcalidrawAppState, useExcalidrawElements, useExcalidrawSetAppState } from "./App";
 
 import { Popover } from "./Popover";
 
@@ -15,6 +15,8 @@ import type { ShortcutName } from "../actions/shortcuts";
 import type { Action } from "../actions/types";
 
 import type { TranslationKeys } from "../i18n";
+import scene from "@excalidraw/element/Scene";
+import { ExcalidrawTextElement } from "@excalidraw/element/types";
 
 type ContextMenuLiteral = typeof CONTEXT_MENU_SEPARATOR | typeof CONTEXT_MENU_UNDO | typeof  CONTEXT_MENU_REDO
 
@@ -23,6 +25,7 @@ export type ContextMenuItem = ContextMenuLiteral | Action;
 export type ContextMenuItems = (ContextMenuItem | false | null | undefined)[];
 
 type ContextMenuProps = {
+  scene: scene;
   actionManager: ActionManager;
   items: ContextMenuItems;
   top: number;
@@ -41,7 +44,7 @@ const CONTEXT_MENU_LITERALS = new Set<ContextMenuLiteral>([
 ])
 
 export const ContextMenu = React.memo(
-  ({ actionManager, items, top, left, onClose }: ContextMenuProps) => {
+  ({ scene, actionManager, items, top, left, onClose }: ContextMenuProps) => {
     const appState = useExcalidrawAppState();
     const elements = useExcalidrawElements();
 
@@ -61,6 +64,12 @@ export const ContextMenu = React.memo(
       return acc;
     }, []);
 
+
+    const selectedIds = Object.keys(appState.selectedElementIds)
+    const selectedElement= selectedIds.length === 1
+      ? elements.find(el => el.type === 'text' && el.id === selectedIds[0]) as ExcalidrawTextElement | undefined
+      : null
+
     return (
       <Popover
         onCloseRequest={() => {
@@ -78,6 +87,19 @@ export const ContextMenu = React.memo(
           className="context-menu"
           onContextMenu={(event) => event.preventDefault()}
         >
+          {/*<button onClick={() => {*/}
+          {/*  console.log(appState.activeTool)*/}
+          {/*  console.log(appState.selectedElementIds)*/}
+
+          {/*  if(selectedElement) {*/}
+          {/*    onClose(() => {*/}
+          {/*      console.log('before', selectedElement)*/}
+          {/*      scene.mutateElement(selectedElement, {originalText: 'xxx xxx', text: 'xxx xxx'})*/}
+          {/*      console.log('mutated', selectedElement)*/}
+          {/*      console.log('xxx', appState.editingTextElement)*/}
+          {/*    })*/}
+          {/*  }*/}
+          {/*}}>xxx xxx</button>*/}
           {filteredItems.map((item, idx) => {
             if (item === CONTEXT_MENU_SEPARATOR) {
               if (
