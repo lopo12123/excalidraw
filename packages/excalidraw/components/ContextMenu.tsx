@@ -25,6 +25,7 @@ export type ContextMenuItem = ContextMenuLiteral | Action;
 export type ContextMenuItems = (ContextMenuItem | false | null | undefined)[];
 
 type ContextMenuProps = {
+  passthrough: any
   scene: scene;
   actionManager: ActionManager;
   items: ContextMenuItems;
@@ -44,7 +45,7 @@ const CONTEXT_MENU_LITERALS = new Set<ContextMenuLiteral>([
 ])
 
 export const ContextMenu = React.memo(
-  ({ scene, actionManager, items, top, left, onClose }: ContextMenuProps) => {
+  ({ scene, actionManager, items, top, left, onClose, passthrough }: ContextMenuProps) => {
     const appState = useExcalidrawAppState();
     const elements = useExcalidrawElements();
 
@@ -66,7 +67,7 @@ export const ContextMenu = React.memo(
 
 
     const selectedIds = Object.keys(appState.selectedElementIds)
-    const selectedElement= selectedIds.length === 1
+    const selectedTextElement= selectedIds.length === 1
       ? elements.find(el => el.type === 'text' && el.id === selectedIds[0]) as ExcalidrawTextElement | undefined
       : null
 
@@ -87,19 +88,25 @@ export const ContextMenu = React.memo(
           className="context-menu"
           onContextMenu={(event) => event.preventDefault()}
         >
-          {/*<button onClick={() => {*/}
-          {/*  console.log(appState.activeTool)*/}
-          {/*  console.log(appState.selectedElementIds)*/}
-
-          {/*  if(selectedElement) {*/}
-          {/*    onClose(() => {*/}
-          {/*      console.log('before', selectedElement)*/}
-          {/*      scene.mutateElement(selectedElement, {originalText: 'xxx xxx', text: 'xxx xxx'})*/}
-          {/*      console.log('mutated', selectedElement)*/}
-          {/*      console.log('xxx', appState.editingTextElement)*/}
-          {/*    })*/}
-          {/*  }*/}
-          {/*}}>xxx xxx</button>*/}
+          {
+            // type: 'text' 类型的元素修改后需要调用 App 上的 handleTextWysiwyg 方法立即更新元素
+            selectedTextElement && (
+              <>
+                <button
+                  type="button" className="context-menu-item"
+                  onClick={() => {
+                      onClose(() => {
+                        const originalText = selectedTextElement.originalText || selectedTextElement.text;
+                        const newText = originalText + `\n${new Date().toLocaleString()}`;
+                        scene.mutateElement(selectedTextElement, {originalText: newText, text: newText})
+                        passthrough(selectedTextElement, {isExistingElement: true})
+                      })
+                  }}>
+                  插入当前时间
+                </button>
+              </>
+            )
+          }
           {filteredItems.map((item, idx) => {
             if (item === CONTEXT_MENU_SEPARATOR) {
               if (

@@ -1784,6 +1784,7 @@ class App extends React.Component<AppProps, AppState> {
                             top={this.state.contextMenu.top}
                             left={this.state.contextMenu.left}
                             actionManager={this.actionManager}
+                            passthrough={this.handleTextWysiwyg.bind(this)}
                             onClose={(callback) => {
                               this.setState({ contextMenu: null }, () => {
                                 this.focusContainer();
