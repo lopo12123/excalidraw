@@ -97,7 +97,7 @@ export const ContextMenu = React.memo(
                   onClick={() => {
                       onClose(() => {
                         const originalText = selectedTextElement.originalText || selectedTextElement.text;
-                        const newText = originalText + `\n${new Date().toLocaleString()}`;
+                        const newText = originalText + `\n${new Date().toLocaleDateString()}`;
                         scene.mutateElement(selectedTextElement, {originalText: newText, text: newText})
                         passthrough(selectedTextElement, {isExistingElement: true})
                       })
