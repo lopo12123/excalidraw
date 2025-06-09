@@ -5303,6 +5303,7 @@ class App extends React.Component<AppProps, AppState> {
     container?: ExcalidrawTextContainer | null;
     autoEdit?: boolean;
   }) => {
+    // FIXME: 始终绑定到容器中
     let shouldBindToContainer = false;
 
     let parentCenterPosition =
@@ -11143,15 +11144,17 @@ class App extends React.Component<AppProps, AppState> {
         x - elementCenterX,
         y - elementCenterY,
       );
-      const isSnappedToCenter =
-        distanceToCenter < TEXT_TO_CENTER_SNAP_THRESHOLD;
-      if (isSnappedToCenter) {
+
+      // FIXME: 始终绑定到容器中
+      // const isSnappedToCenter =
+      //   distanceToCenter < TEXT_TO_CENTER_SNAP_THRESHOLD;
+      // if (isSnappedToCenter) {
         const { x: viewportX, y: viewportY } = sceneCoordsToViewportCoords(
           { sceneX: elementCenterX, sceneY: elementCenterY },
           appState,
         );
         return { viewportX, viewportY, elementCenterX, elementCenterY };
-      }
+      // }
     }
   }
 
